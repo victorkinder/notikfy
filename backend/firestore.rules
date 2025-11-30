@@ -1,0 +1,56 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Helper function para verificar se o usuário está autenticado
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // Helper function para verificar se o usuário é o dono do recurso
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // Coleção de usuários
+    match /usuarios/{userId} {
+      // Permitir leitura e escrita apenas para o próprio usuário
+      allow read, write: if isOwner(userId);
+
+      // Permitir criação apenas se for o próprio usuário
+      allow create: if isAuthenticated() && request.auth.uid == userId
+                    && request.resource.data.uid == userId;
+    }
+
+    // Coleção de vendas
+    match /vendas/{saleId} {
+      // Permitir leitura apenas se o usuário for o dono da venda
+      allow read: if isAuthenticated() 
+                  && resource.data.userId == request.auth.uid;
+
+      // Permitir criação se o usuário estiver autenticado e for o dono
+      allow create: if isAuthenticated()
+                    && request.resource.data.userId == request.auth.uid;
+
+      // Permitir atualização apenas se o usuário for o dono
+      allow update: if isAuthenticated()
+                    && resource.data.userId == request.auth.uid
+                    && request.resource.data.userId == request.auth.uid;
+
+      // Não permitir deleção (vendas devem ser mantidas para histórico)
+      allow delete: if false;
+    }
+
+    // Coleção de logs (opcional)
+    match /logs/{logId} {
+      // Apenas o backend pode criar logs
+      // Usuários não podem ler ou escrever logs diretamente
+      allow read, write: if false;
+    }
+
+    // Bloquear acesso a todas as outras coleções
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
+
