@@ -72,9 +72,14 @@ Edite o arquivo `.env` com seus valores reais:
 - `FIREBASE_PROJECT_ID`: ID do seu projeto Firebase
 - `TIKTOK_WEBHOOK_SECRET`: Secret para validar webhooks do TikTok
 - `TELEGRAM_BOT_TOKEN`: Token do bot Telegram (opcional)
+- `KIWIFY_SECRET_KEY`: Chave secreta para validar assinatura HMAC dos webhooks da Kiwify (fornecido pela Kiwify: `3ienivdzi7c`)
+- (Alternativa: `KIWIFY_WEBHOOK_TOKEN` também funciona para compatibilidade)
 - `NODE_ENV`: Ambiente (development, staging, production)
 
-**Importante**: Nunca commite o arquivo `.env` com valores reais!
+**Importante**: 
+- Nunca commite o arquivo `.env` com valores reais!
+- A chave secreta da Kiwify (`3ienivdzi7c`) é usada para calcular e validar a assinatura HMAC SHA1 dos webhooks
+- A validação usa assinatura HMAC no query parameter `signature`, não token no header
 
 ### 6. Compilar TypeScript
 
@@ -215,6 +220,35 @@ GET /helloWorld
 
 Endpoint de exemplo que retorna uma mensagem de boas-vindas.
 
+### Webhook Kiwify
+
+```
+POST /kiwifyWebhook
+```
+
+Endpoint para receber webhooks da Kiwify. Processa os seguintes eventos:
+- `order_approved`: Quando uma compra é aprovada
+- `subscription_renewed`: Quando uma assinatura é renovada
+- `subscription_canceled`: Quando uma assinatura é cancelada
+- `chargeback`: Quando ocorre um chargeback
+
+**Autenticação:**
+- A validação é feita através de assinatura HMAC SHA1
+- A assinatura vem no query parameter: `?signature=<hmac-signature>`
+- Chave secreta: `3ienivdzi7c` (fornecido pela Kiwify, configurada como `KIWIFY_SECRET_KEY`)
+- O backend calcula a assinatura esperada usando HMAC SHA1 do payload JSON e compara com a recebida
+
+**Configuração na Kiwify:**
+Após o deploy, configure a URL do webhook na plataforma Kiwify:
+```
+https://<região>-<projeto-id>.cloudfunctions.net/kiwifyWebhook
+```
+
+Exemplo:
+```
+https://us-central1-seu-projeto-id.cloudfunctions.net/kiwifyWebhook
+```
+
 ## Scripts Disponíveis
 
 - `npm run build` - Compila TypeScript para JavaScript
@@ -238,10 +272,49 @@ Siga os padrões definidos no [GUIDLINE.MD](./GUIDLINE.MD):
 
 - Firebase Security Rules estão configuradas em `firestore.rules`
 - Variáveis sensíveis devem estar em `.env` (nunca commitar)
-- Para produção, use Firebase Functions Config:
-  ```bash
-  firebase functions:config:set tiktok.webhook_secret="your-secret"
-  ```
+- Para **ambientes na nuvem** (DEV, Staging, Production), configure via Firebase Console ou CLI
+
+### Configurar Variáveis de Ambiente na Nuvem
+
+Como estamos usando **Firebase Functions v2**, você tem duas opções:
+
+#### Opção 1: Via Firebase Console (Recomendado - Mais Fácil)
+
+1. Acesse o [Firebase Console](https://console.firebase.google.com/)
+2. Selecione seu projeto
+3. Vá em **Functions** → **Configuração** (ou **Configuration**)
+4. Na aba **Environment variables**, adicione:
+   - Nome: `KIWIFY_SECRET_KEY`
+   - Valor: `3ienivdzi7c`
+   - (ou `KIWIFY_WEBHOOK_TOKEN` também funciona para compatibilidade)
+5. Clique em **Salvar**
+6. Faça o deploy novamente das functions:
+   ```bash
+   firebase deploy --only functions
+   ```
+
+#### Opção 2: Via Firebase CLI (Usando Secrets - Mais Seguro)
+
+Para valores sensíveis, você pode usar Secrets do Firebase:
+
+```bash
+# Criar o secret
+echo -n "3ienivdzi7c" | firebase functions:secrets:set KIWIFY_SECRET_KEY
+
+# Para DEV (se tiver projeto separado)
+firebase use dev-project-id
+echo -n "3ienivdzi7c" | firebase functions:secrets:set KIWIFY_SECRET_KEY
+
+# Para PROD (quando chegar a hora)
+firebase use prod-project-id
+echo -n "3ienivdzi7c" | firebase functions:secrets:set KIWIFY_SECRET_KEY
+```
+
+**Nota:** 
+- A chave secreta da Kiwify (`3ienivdzi7c`) foi fornecida pela própria Kiwify
+- A validação usa assinatura HMAC SHA1 no query parameter `signature`, não token no header
+- Para ambiente DEV na nuvem, use a **Opção 1** (via Console) - é mais simples e rápido
+- Secrets são mais seguros para produção, mas requerem ajustes no código para usar `defineSecret`
 
 ## Monitoramento
 
@@ -267,3 +340,5 @@ Siga os padrões definidos no [GUIDLINE.MD](./GUIDLINE.MD):
 
 Para dúvidas ou problemas, consulte a documentação do Firebase ou os guidelines do projeto.
 
+Url ambiente dev:
+https://us-central1-minerx-app-login.cloudfunctions.net/...

@@ -7,6 +7,8 @@ export const COLLECTIONS = {
   USUARIOS: "usuarios",
   VENDAS: "vendas",
   LOGS: "logs",
+  ACTIVATION_KEYS: "activationKeys",
+  SIGNATURES: "signature",
 } as const;
 
 // Status de vendas
@@ -43,4 +45,13 @@ export const LIMITS = {
 export const TIMEOUTS = {
   HTTP_REQUEST: 5000, // 5 segundos
   WEBHOOK_PROCESSING: 10000, // 10 segundos
+} as const;
+
+// Configurações Kiwify
+// TODO: Remover hardcode e usar apenas variáveis de ambiente após corrigir configuração no Firebase
+export const KIWIFY = {
+  SECRET_KEY:
+    process.env.KIWIFY_SECRET_KEY ||
+    process.env.KIWIFY_WEBHOOK_TOKEN ||
+    "3ienivdzi7c", // Hardcoded temporariamente para desenvolvimento
 } as const;

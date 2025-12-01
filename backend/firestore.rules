@@ -47,6 +47,23 @@ service cloud.firestore {
       allow read, write: if false;
     }
 
+    // Coleção de chaves de ativação
+    match /activationKeys/{keyId} {
+      // Usuários autenticados podem apenas ler chaves (para validação)
+      // Apenas o backend pode criar/atualizar chaves
+      allow read: if isAuthenticated();
+      allow write: if false; // Apenas via Cloud Functions
+    }
+
+    // Coleção de assinaturas
+    match /signature/{email} {
+      // Usuários autenticados podem ler apenas sua própria assinatura
+      allow read: if isAuthenticated() 
+                  && request.auth.token.email == email;
+      // Apenas o backend pode criar/atualizar assinaturas
+      allow write: if false; // Apenas via Cloud Functions
+    }
+
     // Bloquear acesso a todas as outras coleções
     match /{document=**} {
       allow read, write: if false;

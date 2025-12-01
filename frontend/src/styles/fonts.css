@@ -1,0 +1,42 @@
+/* TikTok Sans Font Face */
+/* 
+ * Para ativar as fontes TikTok Sans:
+ * 1. Baixe as fontes de: https://github.com/tiktok/TikTokSans
+ * 2. Coloque os arquivos .woff2 em public/fonts/
+ * 3. Descomente as declarações @font-face abaixo
+ */
+
+/* 
+@font-face {
+  font-family: "TikTok Sans";
+  src: url("/fonts/TikTokSans-Regular.woff2") format("woff2"),
+    url("/fonts/TikTokSans-Regular.woff") format("woff"),
+    url("/fonts/TikTokSans-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "TikTok Sans";
+  src: url("/fonts/TikTokSans-Medium.woff2") format("woff2"),
+    url("/fonts/TikTokSans-Medium.woff") format("woff"),
+    url("/fonts/TikTokSans-Medium.ttf") format("truetype");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "TikTok Sans";
+  src: url("/fonts/TikTokSans-Bold.woff2") format("woff2"),
+    url("/fonts/TikTokSans-Bold.woff") format("woff"),
+    url("/fonts/TikTokSans-Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+*/
+
+/* Fallback: A fonte TikTok Sans será usada quando os arquivos estiverem disponíveis */
+/* Por enquanto, o Header usa "TikTok Sans" no fontFamily, mas o navegador usará o fallback */
