@@ -1,9 +1,19 @@
 /**
+ * Informações de OAuth do perfil TikTok
+ */
+export interface TikTokProfileOAuth {
+  isConnected: boolean;
+  connectedAt?: string; // ISO timestamp
+  shopId?: string;
+}
+
+/**
  * Perfil do TikTok do usuário
  */
 export interface TikTokProfile {
   username: string; // @username (sem o @)
   createdAt: string; // ISO timestamp
+  oauth?: TikTokProfileOAuth;
 }
 
 /**

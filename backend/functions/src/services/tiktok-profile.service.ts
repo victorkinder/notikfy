@@ -149,7 +149,7 @@ function validateTikTokUsername(username: string): void {
 function convertProfileToResponse(
   profile: TikTokProfile
 ): TikTokProfileResponse {
-  return {
+  const response: TikTokProfileResponse = {
     username: profile.username,
     createdAt:
       profile.createdAt instanceof Timestamp
@@ -158,6 +158,22 @@ function convertProfileToResponse(
           ? profile.createdAt
           : new Date().toISOString(), // Fallback
   };
+
+  // Inclui informações de OAuth se existirem (sem expor tokens)
+  if (profile.oauth) {
+    response.oauth = {
+      isConnected: profile.oauth.isConnected,
+      shopId: profile.oauth.shopId,
+      connectedAt:
+        profile.oauth.connectedAt instanceof Timestamp
+          ? profile.oauth.connectedAt.toDate().toISOString()
+          : typeof profile.oauth.connectedAt === "string"
+            ? profile.oauth.connectedAt
+            : undefined,
+    };
+  }
+
+  return response;
 }
 
 /**

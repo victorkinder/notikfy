@@ -12,7 +12,8 @@ import { useTikTokProfiles } from "../../context/TikTokProfileContext";
 import { ProfileCard } from "../../components/tiktok-profiles/ProfileCard";
 import { AddProfileForm } from "../../components/tiktok-profiles/AddProfileForm";
 import { useNotification } from "../../hooks/useNotification";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 
 export const TikTokProfiles = () => {
   const {
@@ -23,11 +24,36 @@ export const TikTokProfiles = () => {
     profileLimit,
     currentCount,
     canAddMore,
+    refreshProfiles,
   } = useTikTokProfiles();
-  const { showSuccess } = useNotification();
+  const { showSuccess, showError } = useNotification();
   const [deletingUsernames, setDeletingUsernames] = useState<Set<string>>(
     new Set()
   );
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  // Verifica se há parâmetros de callback OAuth na URL
+  useEffect(() => {
+    const connected = searchParams.get("connected");
+    const error = searchParams.get("error");
+    const username = searchParams.get("username");
+
+    if (connected === "true") {
+      showSuccess(
+        username
+          ? `Perfil @${username} conectado com sucesso!`
+          : "Perfil conectado com sucesso!"
+      );
+      // Remove parâmetros da URL
+      setSearchParams({});
+      // Recarrega perfis para atualizar status
+      refreshProfiles();
+    } else if (error) {
+      showError(new Error(decodeURIComponent(error)));
+      // Remove parâmetros da URL
+      setSearchParams({});
+    }
+  }, [searchParams, showSuccess, showError, refreshProfiles, setSearchParams]);
 
   const handleDelete = async (username: string) => {
     setDeletingUsernames((prev) => new Set(prev).add(username));

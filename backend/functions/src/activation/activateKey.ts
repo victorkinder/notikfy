@@ -6,27 +6,7 @@ import { validateAndActivateKey } from "../services/activation.service";
 import { ActivationRequest } from "../models/activation.model";
 import { UnauthorizedError, ValidationError } from "../utils/errors";
 import { auth } from "../config/firebase.config";
-
-/**
- * Valida o token de autenticação do Firebase
- */
-async function validateAuthToken(req: Request): Promise<string> {
-  const authHeader = req.headers.authorization;
-
-  if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    throw new UnauthorizedError("Token de autenticação não fornecido");
-  }
-
-  const token = authHeader.split("Bearer ")[1];
-
-  try {
-    const decodedToken = await auth.verifyIdToken(token);
-    return decodedToken.uid;
-  } catch (error) {
-    logger.warn("Token de autenticação inválido", { error });
-    throw new UnauthorizedError("Token de autenticação inválido");
-  }
-}
+import { getOrCreateUser } from "../services/user.service";
 
 /**
  * Cloud Function HTTP para ativar uma chave de ativação
@@ -50,8 +30,17 @@ export const activateKey = functions.https.onRequest(
         return;
       }
 
-      // Valida autenticação
-      const userId = await validateAuthToken(req);
+      // Valida autenticação e obtém dados do usuário
+      const authHeader = req.headers.authorization;
+      if (!authHeader || !authHeader.startsWith("Bearer ")) {
+        throw new UnauthorizedError("Token de autenticação não fornecido");
+      }
+
+      const token = authHeader.split("Bearer ")[1];
+      const decodedToken = await auth.verifyIdToken(token);
+      const userId = decodedToken.uid;
+      const email = decodedToken.email || "";
+      const displayName = decodedToken.name || "";
 
       // Valida body
       if (!req.body || typeof req.body !== "object") {
@@ -68,6 +57,9 @@ export const activateKey = functions.https.onRequest(
 
       // Valida e ativa a chave
       const activationData = await validateAndActivateKey(key.trim(), userId);
+
+      // Garante que o usuário existe com configurações padrão de notificação
+      await getOrCreateUser(userId, email, displayName);
 
       logger.info("Chave ativada com sucesso", {
         userId,

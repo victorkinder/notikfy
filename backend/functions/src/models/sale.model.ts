@@ -16,6 +16,7 @@ export interface Sale {
   amount: number;
   currency: string;
   status: SaleStatus;
+  commission?: number; // Comissão da venda (extraída do webhook)
   webhookData: Record<string, unknown>; // Dados completos do webhook
   notificationSent: boolean;
   createdAt: Timestamp;
@@ -31,6 +32,7 @@ export interface CreateSaleData {
   amount: number;
   currency: string;
   status?: SaleStatus;
+  commission?: number; // Comissão da venda
   webhookData: Record<string, unknown>;
   notificationSent?: boolean;
 }

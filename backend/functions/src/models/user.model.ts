@@ -20,6 +20,14 @@ export interface TelegramConfig {
 }
 
 /**
+ * Configurações de notificação do usuário
+ */
+export interface NotificationSettings {
+  type: "sale" | "accumulated_commission";
+  accumulatedCommissionThreshold?: number; // 50, 100, 250, 500, 1000
+}
+
+/**
  * Modelo de usuário no Firestore
  */
 export interface User {
@@ -29,6 +37,8 @@ export interface User {
   tiktok: TikTokConfig;
   telegram: TelegramConfig;
   tiktokProfiles?: TikTokProfile[]; // Perfis do TikTok cadastrados
+  notificationSettings?: NotificationSettings;
+  accumulatedCommission?: number; // Comissão acumulada para notificações (padrão: 0)
   createdAt: Timestamp;
   updatedAt: Timestamp;
 }
@@ -58,4 +68,12 @@ export interface UpdateTelegramConfigData {
   botToken: string;
   chatId: string;
   isConfigured?: boolean;
+}
+
+/**
+ * Dados para atualizar configurações de notificação
+ */
+export interface UpdateNotificationSettingsData {
+  type: "sale" | "accumulated_commission";
+  accumulatedCommissionThreshold?: number;
 }

@@ -20,6 +20,14 @@ export interface TelegramConfig {
 }
 
 /**
+ * Configurações de notificação do usuário
+ */
+export interface NotificationSettings {
+  type: "sale" | "accumulated_commission";
+  accumulatedCommissionThreshold?: number; // 50, 100, 250, 500, 1000
+}
+
+/**
  * Modelo de usuário no Firestore
  */
 export interface User {
@@ -29,6 +37,7 @@ export interface User {
   tiktok: TikTokConfig;
   telegram: TelegramConfig;
   tiktokProfiles?: TikTokProfile[]; // Perfis do TikTok cadastrados
+  notificationSettings?: NotificationSettings;
   createdAt: Timestamp;
   updatedAt: Timestamp;
 }
