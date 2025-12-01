@@ -10,6 +10,7 @@ import {
   CircularProgress,
 } from "@mui/material";
 import { useActivation } from "../../context/ActivationContext";
+import { useNotification } from "../../hooks/useNotification";
 
 interface ActivationKeyFormProps {
   onSuccess?: () => void;
@@ -17,6 +18,7 @@ interface ActivationKeyFormProps {
 
 export const ActivationKeyForm = ({ onSuccess }: ActivationKeyFormProps) => {
   const { activate, loading } = useActivation();
+  const { showSuccess, showError } = useNotification();
   const [key, setKey] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -33,7 +35,9 @@ export const ActivationKeyForm = ({ onSuccess }: ActivationKeyFormProps) => {
 
     try {
       await activate(key.trim());
-      setSuccess("Código de ativação validado com sucesso!");
+      const successMessage = "Código de ativação validado com sucesso!";
+      setSuccess(successMessage);
+      showSuccess(successMessage);
       setKey("");
       if (onSuccess) {
         setTimeout(() => {
@@ -44,6 +48,7 @@ export const ActivationKeyForm = ({ onSuccess }: ActivationKeyFormProps) => {
       const errorMessage =
         err instanceof Error ? err.message : "Erro ao ativar código";
       setError(errorMessage);
+      showError(err);
     }
   };
 

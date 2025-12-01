@@ -17,8 +17,8 @@ export const Activation = () => {
   const { activationStatus } = useActivation();
 
   const handleActivationSuccess = () => {
-    // Redireciona para o dashboard após ativação bem-sucedida
-    navigate("/");
+    // Redireciona para a página de vendas após ativação bem-sucedida
+    navigate("/sales");
   };
 
   // Se já estiver ativado, mostra mensagem

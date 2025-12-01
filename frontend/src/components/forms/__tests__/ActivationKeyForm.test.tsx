@@ -49,7 +49,7 @@ describe("ActivationKeyForm", () => {
     const mockResponse = {
       planId: "STARTER" as const,
       planName: "Iniciante",
-      maxAccounts: 5,
+      maxAccounts: 3,
     };
 
     (activateKeyService as jest.Mock).mockResolvedValue(mockResponse);

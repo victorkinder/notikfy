@@ -7,13 +7,13 @@ import { useAuth } from "../../context/AuthContext";
 export const Login = () => {
   const { user, loading } = useAuth();
 
-  // Se já estiver logado, redireciona para o dashboard
+  // Se já estiver logado, redireciona para a página de vendas
   if (loading) {
     return null; // Ou um loading spinner
   }
 
   if (user) {
-    return <Navigate to="/" replace />;
+    return <Navigate to="/sales" replace />;
   }
 
   return (

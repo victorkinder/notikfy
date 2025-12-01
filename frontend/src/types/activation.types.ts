@@ -87,11 +87,11 @@ export const PLANS: Record<PlanId, Plan> = {
   STARTER: {
     id: "STARTER",
     name: "Iniciante",
-    maxAccounts: 5,
+    maxAccounts: 3,
     price: 47,
     kiwifyUrl: "https://pay.kiwify.com.br/DKF9G1h",
     features: [
-      "Conecte até 5 contas do TikTok ao mesmo tempo",
+      "Conecte até 3 contas do TikTok ao mesmo tempo",
       "Notificações ilimitadas",
       "Regulagem de valor para Notificação",
       "Produtos Ilimitados",
@@ -113,11 +113,11 @@ export const PLANS: Record<PlanId, Plan> = {
   SCALED: {
     id: "SCALED",
     name: "Escalado",
-    maxAccounts: 999, // Mais de 10 contas (representado como 999)
+    maxAccounts: 20,
     price: 97,
     kiwifyUrl: "https://pay.kiwify.com.br/zp9u5jU",
     features: [
-      "Conecte mais de 10 contas do TikTok",
+      "Conecte até 20 contas do TikTok",
       "Notificações ilimitadas",
       "Regulagem de valor para Notificação",
       "Produtos Ilimitados",

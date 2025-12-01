@@ -17,10 +17,10 @@ import {
 import {
   Menu as MenuIcon,
   ChevronLeft as ChevronLeftIcon,
-  Dashboard as DashboardIcon,
-  ShoppingCart as SalesIcon,
+  AttachMoney as SalesIcon,
   Settings as SettingsIcon,
   VpnKey as ActivationIcon,
+  MusicNote as TikTokProfileIcon,
 } from "@mui/icons-material";
 import { useAuth } from "../../../context/AuthContext";
 
@@ -34,8 +34,12 @@ interface MenuItem {
 }
 
 const menuItems: MenuItem[] = [
-  { path: "/", label: "Dashboard", icon: <DashboardIcon /> },
   { path: "/sales", label: "Vendas", icon: <SalesIcon /> },
+  {
+    path: "/tiktok-profiles",
+    label: "Perfis TikTok",
+    icon: <TikTokProfileIcon />,
+  },
   { path: "/settings", label: "Configurações", icon: <SettingsIcon /> },
   { path: "/activation", label: "Ativação", icon: <ActivationIcon /> },
 ];

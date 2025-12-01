@@ -15,7 +15,20 @@ const getTheme = (mode: "light" | "dark"): Theme => {
       fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
     },
     components: {
-      // Customizações de componentes podem ser adicionadas aqui
+      MuiAlert: {
+        styleOverrides: {
+          icon: {
+            fontSize: "24px",
+            width: "24px",
+            height: "24px",
+            "& > svg": {
+              fontSize: "24px",
+              width: "24px",
+              height: "24px",
+            },
+          },
+        },
+      },
     },
   });
 };

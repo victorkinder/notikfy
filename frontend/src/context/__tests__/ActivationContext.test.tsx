@@ -54,7 +54,7 @@ describe("ActivationContext", () => {
       accessToken: "TEST123",
       planId: "STARTER" as const,
       planName: "Iniciante",
-      maxAccounts: 5,
+      maxAccounts: 3,
       activatedAt: new Date().toISOString(),
     };
 
@@ -112,7 +112,7 @@ describe("ActivationContext", () => {
       accessToken: "TEST123",
       planId: "STARTER" as const,
       planName: "Iniciante",
-      maxAccounts: 5,
+      maxAccounts: 3,
       activatedAt: new Date().toISOString(),
     };
 

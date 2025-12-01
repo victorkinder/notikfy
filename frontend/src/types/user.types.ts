@@ -1,4 +1,5 @@
 import { Timestamp } from "firebase/firestore";
+import { TikTokProfile } from "./tiktok-profile.types";
 
 /**
  * Configurações do TikTok para o usuário
@@ -27,6 +28,7 @@ export interface User {
   displayName: string;
   tiktok: TikTokConfig;
   telegram: TelegramConfig;
+  tiktokProfiles?: TikTokProfile[]; // Perfis do TikTok cadastrados
   createdAt: Timestamp;
   updatedAt: Timestamp;
 }

@@ -6,6 +6,11 @@ export { purchasePlan } from "./activation/purchasePlan";
 export { kiwifyWebhook } from "./webhooks/kiwifyWebhook";
 export { validateAccessToken } from "./auth/validateAccessToken";
 export { debugEnv } from "./webhooks/debugEnv"; // TEMPORÁRIO - Remover após debug
+export {
+  getTikTokProfiles,
+  addTikTokProfile,
+  removeTikTokProfile,
+} from "./tiktok-profiles/manageProfiles";
 
 // https://us-central1-minerx-app-login.cloudfunctions.net/healthCheck
 // https://us-central1-minerx-app-login.cloudfunctions.net/debugEnv (TEMPORÁRIO)

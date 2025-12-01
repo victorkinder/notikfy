@@ -1,19 +1,15 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import { Login } from "./pages/Login/Login";
-import { Dashboard } from "./pages/Dashboard/Dashboard";
 import { Sales } from "./pages/Sales/Sales";
 import { Settings } from "./pages/Settings/Settings";
 import { Activation } from "./pages/Activation/Activation";
+import { TikTokProfiles } from "./pages/TikTokProfiles/TikTokProfiles";
 import { ProtectedRoute } from "./components/common/ProtectedRoute";
 
 export const router = createBrowserRouter([
   {
     path: "/",
-    element: (
-      <ProtectedRoute>
-        <Dashboard />
-      </ProtectedRoute>
-    ),
+    element: <Navigate to="/sales" replace />,
   },
   {
     path: "/sales",
@@ -40,11 +36,19 @@ export const router = createBrowserRouter([
     ),
   },
   {
+    path: "/tiktok-profiles",
+    element: (
+      <ProtectedRoute>
+        <TikTokProfiles />
+      </ProtectedRoute>
+    ),
+  },
+  {
     path: "/login",
     element: <Login />,
   },
   {
     path: "*",
-    element: <Navigate to="/" replace />,
+    element: <Navigate to="/sales" replace />,
   },
 ]);

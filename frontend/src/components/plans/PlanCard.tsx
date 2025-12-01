@@ -59,8 +59,7 @@ export const PlanCard = ({ plan, kiwifyUrl }: PlanCardProps) => {
           </Typography>
         </Box>
         <Typography variant="body2" color="text.secondary">
-          Conecte até {plan.maxAccounts === 999 ? "10+" : plan.maxAccounts}{" "}
-          contas do TikTok
+          Conecte até {plan.maxAccounts} contas do TikTok
         </Typography>
       </Box>
       <Divider sx={{ my: 2 }} />

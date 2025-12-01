@@ -1,0 +1,15 @@
+[
+  {
+    "id": "STARTER",
+    "profileLimit": 3
+  },
+  {
+    "id": "SCALING",
+    "profileLimit": 10
+  },
+  {
+    "id": "SCALED",
+    "profileLimit": 20
+  }
+]
+

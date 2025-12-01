@@ -12,7 +12,7 @@ export const GoogleLoginButton = () => {
       setLoading(true);
       await signInWithGoogle();
       // Login bem-sucedido - o AuthContext vai atualizar automaticamente
-      navigate("/");
+      navigate("/sales");
     } catch (error) {
       console.error("Error signing in with Google:", error);
       // TODO: Mostrar toast de erro ao usuário

@@ -109,23 +109,9 @@ export const validateAccessToken = functions.https.onRequest(
         return;
       }
 
-      // Verifica se o email da assinatura corresponde ao email do Google
-      if (signature.email.toLowerCase() !== googleUser.email.toLowerCase()) {
-        logger.warn("Email da assinatura não corresponde ao email do Google", {
-          signatureEmail: signature.email,
-          googleEmail: googleUser.email,
-        });
-        res.status(200).json({
-          success: true,
-          data: {
-            valid: false,
-            message: "Access token não corresponde a este usuário",
-          } as ValidateAccessTokenResponse,
-        });
-        return;
-      }
-
       // Verifica se a assinatura está válida (ativa e não expirada)
+      // Nota: Não validamos correspondência de email, pois o email do Google
+      // pode ser diferente do email da assinatura (comum na prática)
       const isValid = await isSignatureValid(signature.email);
 
       if (!isValid) {

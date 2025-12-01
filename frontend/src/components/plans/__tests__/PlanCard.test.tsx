@@ -22,7 +22,7 @@ describe("PlanCard", () => {
 
     expect(screen.getByText("Iniciante")).toBeInTheDocument();
     expect(
-      screen.getByText("Conecte até 5 contas do TikTok ao mesmo tempo")
+      screen.getByText("Conecte até 3 contas do TikTok ao mesmo tempo")
     ).toBeInTheDocument();
     expect(
       screen.getByRole("button", { name: /Obter Código/i })

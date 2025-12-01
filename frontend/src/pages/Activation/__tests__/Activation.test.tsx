@@ -51,7 +51,7 @@ describe("Activation", () => {
       key: "TEST123",
       planId: "STARTER" as const,
       planName: "Iniciante",
-      maxAccounts: 5,
+      maxAccounts: 3,
       activatedAt: new Date().toISOString(),
     };
 
@@ -59,6 +59,6 @@ describe("Activation", () => {
 
     renderComponent();
 
-    expect(mockNavigate).toHaveBeenCalledWith("/");
+    expect(mockNavigate).toHaveBeenCalledWith("/sales");
   });
 });

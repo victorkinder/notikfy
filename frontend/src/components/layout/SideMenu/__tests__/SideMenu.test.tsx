@@ -44,7 +44,6 @@ describe("SideMenu", () => {
     renderWithProviders(<SideMenu />);
     const toggleButton = screen.getByLabelText("toggle menu");
     fireEvent.click(toggleButton);
-    expect(screen.getByText("Dashboard")).toBeInTheDocument();
     expect(screen.getByText("Vendas")).toBeInTheDocument();
     expect(screen.getByText("Configurações")).toBeInTheDocument();
   });
@@ -91,13 +90,13 @@ describe("SideMenu", () => {
 
     // Primeiro expande o menu
     fireEvent.click(toggleButton);
-    expect(screen.getByText("Dashboard")).toBeInTheDocument();
+    expect(screen.getByText("Vendas")).toBeInTheDocument();
 
     // Depois recolhe
     fireEvent.click(toggleButton);
 
-    const dashboardText = screen.queryByText("Dashboard");
-    expect(dashboardText).not.toBeVisible();
+    const vendasText = screen.queryByText("Vendas");
+    expect(vendasText).not.toBeVisible();
   });
 
   it("deve expandir o menu ao clicar novamente no botão de toggle", () => {
@@ -107,19 +106,19 @@ describe("SideMenu", () => {
     fireEvent.click(toggleButton);
     fireEvent.click(toggleButton);
 
-    expect(screen.getByText("Dashboard")).toBeInTheDocument();
+    expect(screen.getByText("Vendas")).toBeInTheDocument();
   });
 
   it("deve destacar o item do menu ativo", () => {
-    window.history.pushState({}, "Dashboard", "/");
+    window.history.pushState({}, "Vendas", "/sales");
     renderWithProviders(<SideMenu />);
     const toggleButton = screen.getByLabelText("toggle menu");
     fireEvent.click(toggleButton);
 
-    const dashboardButton = screen
-      .getByText("Dashboard")
+    const vendasButton = screen
+      .getByText("Vendas")
       .closest('[role="button"]');
-    expect(dashboardButton).toHaveClass("Mui-selected");
+    expect(vendasButton).toHaveClass("Mui-selected");
   });
 
   it("deve navegar para a rota ao clicar em um item do menu", () => {
@@ -183,7 +182,7 @@ describe("SideMenu", () => {
       renderWithProviders(
         <SideMenu isMobile={true} mobileOpen={true} onMobileClose={mockOnMobileClose} />
       );
-      expect(screen.getByText("Dashboard")).toBeInTheDocument();
+      expect(screen.getByText("Vendas")).toBeInTheDocument();
       expect(screen.getByLabelText("close menu")).toBeInTheDocument();
     });
 
@@ -221,12 +220,12 @@ describe("SideMenu", () => {
       
       // Primeiro expande o menu
       fireEvent.click(toggleButton);
-      expect(screen.getByText("Dashboard")).toBeInTheDocument();
+      expect(screen.getByText("Vendas")).toBeInTheDocument();
       
       // Depois recolhe
       fireEvent.click(toggleButton);
-      const dashboardText = screen.queryByText("Dashboard");
-      expect(dashboardText).not.toBeVisible();
+      const vendasText = screen.queryByText("Vendas");
+      expect(vendasText).not.toBeVisible();
     });
 
     it("não deve fechar menu ao clicar em item em desktop", () => {
