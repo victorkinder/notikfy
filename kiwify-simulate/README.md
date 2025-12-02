@@ -156,7 +156,7 @@ python simulate_webhook.py approved \
 
 - **STARTER** (Iniciante): R$ 47,00/mês - Até 5 contas
 - **SCALING** (Escalando): R$ 67,00/mês - Até 10 contas
-- **SCALED** (Escalado): R$ 97,00/mês - Mais de 10 contas
+- **SCALED** (Escalado): R$ 117,00/mês - Mais de 10 contas
 
 ## Estrutura do Payload
 

@@ -80,7 +80,7 @@ export const TikTokProfiles = () => {
             Perfis do TikTok
           </Typography>
           <Typography variant="body1" color="text.secondary">
-            Gerencie seus perfis do TikTok conectados. Seu plano permite até{" "}
+            Gerencie seus perfis do TikTok. Seu plano permite até{" "}
             {profileLimit} perfil(is).
           </Typography>
         </Box>
@@ -113,13 +113,7 @@ export const TikTokProfiles = () => {
                 >
                   <CircularProgress />
                 </Box>
-              ) : profiles.length === 0 ? (
-                <Alert severity="info">
-                  {canAddMore
-                    ? "Você ainda não possui perfis cadastrados. Adicione seu primeiro perfil usando o formulário ao lado."
-                    : "Você ainda não possui perfis cadastrados."}
-                </Alert>
-              ) : (
+              ) : profiles.length > 0 ? (
                 <Stack spacing={2}>
                   {profiles.map((profile) => (
                     <ProfileCard
@@ -130,7 +124,7 @@ export const TikTokProfiles = () => {
                     />
                   ))}
                 </Stack>
-              )}
+              ) : null}
             </Box>
           </Grid>
         </Grid>

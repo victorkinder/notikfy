@@ -13,7 +13,7 @@ export default defineConfig({
         name: "Notikfy",
         short_name: "Notikfy",
         description: "Dashboard de notificações TikTok via Telegram",
-        theme_color: "#1976d2",
+        theme_color: "#fe2c55",
         background_color: "#ffffff",
         display: "standalone",
         orientation: "portrait",

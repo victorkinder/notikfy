@@ -102,10 +102,18 @@ export const ProfileCard = ({
         ) : null}
         <Tooltip title="Remover perfil">
           <IconButton
-            color="error"
             onClick={handleDelete}
             disabled={deleting || connecting}
             aria-label={`Remover perfil @${profile.username}`}
+            sx={{
+              color: "white",
+              "&:hover": {
+                backgroundColor: "rgba(255, 255, 255, 0.1)",
+              },
+              "&:disabled": {
+                color: "rgba(255, 255, 255, 0.5)",
+              },
+            }}
           >
             <DeleteIcon />
           </IconButton>

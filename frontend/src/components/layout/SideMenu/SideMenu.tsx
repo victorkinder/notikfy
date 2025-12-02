@@ -128,8 +128,9 @@ export const SideMenu = ({
                 selected={isActive}
                 sx={{
                   minHeight: 48,
+                  height: 48,
                   justifyContent: isExpanded ? "initial" : "center",
-                  px: 2.5,
+                  px: isExpanded ? 2.5 : 0,
                   "&.Mui-selected": {
                     backgroundColor: "primary.main",
                     color: "primary.contrastText",
@@ -145,8 +146,15 @@ export const SideMenu = ({
                 <ListItemIcon
                   sx={{
                     minWidth: 0,
-                    mr: isExpanded ? 3 : "auto",
+                    mr: isExpanded ? 3 : 0,
                     justifyContent: "center",
+                    display: "flex",
+                    alignItems: "center",
+                    "& > svg": {
+                      fontSize: "24px",
+                      width: "24px",
+                      height: "24px",
+                    },
                   }}
                 >
                   {item.icon}
@@ -155,7 +163,9 @@ export const SideMenu = ({
                   primary={item.label}
                   sx={{
                     opacity: isExpanded ? 1 : 0,
+                    display: isExpanded ? "block" : "none",
                     transition: "opacity 0.3s ease",
+                    margin: 0,
                   }}
                 />
               </ListItemButton>

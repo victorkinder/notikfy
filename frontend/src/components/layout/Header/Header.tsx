@@ -11,7 +11,7 @@ export const Header = ({ onMenuClick, showMenuButton = false }: HeaderProps) => 
   const { mode, toggleTheme } = useTheme();
 
   return (
-    <AppBar position="static">
+    <AppBar position="static" sx={{ bgcolor: "black" }}>
       <Toolbar>
         {showMenuButton && (
           <IconButton
@@ -27,8 +27,7 @@ export const Header = ({ onMenuClick, showMenuButton = false }: HeaderProps) => 
         <Box
           sx={{
             display: "flex",
-            alignItems: "center",
-            gap: 0.5,
+            alignItems: "flex-end",
             flexGrow: 1,
           }}
         >
@@ -50,7 +49,7 @@ export const Header = ({ onMenuClick, showMenuButton = false }: HeaderProps) => 
                 '"TikTok Sans", "Roboto", "Helvetica", "Arial", sans-serif',
               fontWeight: 700,
               letterSpacing: "0.02em",
-              fontSize: 32,
+              fontSize: 28,
               lineHeight: 1,
             }}
           >

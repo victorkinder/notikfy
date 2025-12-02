@@ -5,7 +5,10 @@ const getTheme = (mode: "light" | "dark"): Theme => {
     palette: {
       mode,
       primary: {
-        main: "#1976d2",
+        main: "#fe2c55",
+        dark: "#d91e45",
+        light: "#ff5c7a",
+        contrastText: "#ffffff",
       },
       secondary: {
         main: "#dc004e",
@@ -13,22 +16,6 @@ const getTheme = (mode: "light" | "dark"): Theme => {
     },
     typography: {
       fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
-    },
-    components: {
-      MuiAlert: {
-        styleOverrides: {
-          icon: {
-            fontSize: "24px",
-            width: "24px",
-            height: "24px",
-            "& > svg": {
-              fontSize: "24px",
-              width: "24px",
-              height: "24px",
-            },
-          },
-        },
-      },
     },
   });
 };
