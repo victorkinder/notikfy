@@ -9,6 +9,7 @@ import {
   removeTikTokProfile as removeTikTokProfileService,
 } from "../services/tiktok-profile.service";
 import { UnauthorizedError, ValidationError } from "../utils/errors";
+import { findUserIdByAccessToken } from "../services/signature.service";
 
 /**
  * Valida o token de autenticação do Firebase
@@ -86,6 +87,23 @@ export const getTikTokProfiles = functions.https.onRequest(
         (typeof queryToken === "string" ? queryToken : null) ||
         null;
 
+      // Se activationAccessToken for fornecido, valida que pertence ao userId correto
+      if (activationAccessToken) {
+        const tokenUserId = await findUserIdByAccessToken(
+          activationAccessToken
+        );
+        if (tokenUserId && tokenUserId !== uid) {
+          logger.warn("Tentativa de usar activation token de outro usuário", {
+            userId: uid,
+            tokenUserId,
+            activationAccessToken,
+          });
+          throw new ValidationError(
+            "Este token de ativação pertence a outro usuário"
+          );
+        }
+      }
+
       logger.info("Listando perfis TikTok", {
         userId: uid,
         hasActivationToken: !!activationAccessToken,
@@ -148,6 +166,23 @@ export const addTikTokProfile = functions.https.onRequest(
         (Array.isArray(headerToken) ? headerToken[0] : headerToken) ||
         (typeof queryToken === "string" ? queryToken : null) ||
         null;
+
+      // Se activationAccessToken for fornecido, valida que pertence ao userId correto
+      if (activationAccessToken) {
+        const tokenUserId = await findUserIdByAccessToken(
+          activationAccessToken
+        );
+        if (tokenUserId && tokenUserId !== uid) {
+          logger.warn("Tentativa de usar activation token de outro usuário", {
+            userId: uid,
+            tokenUserId,
+            activationAccessToken,
+          });
+          throw new ValidationError(
+            "Este token de ativação pertence a outro usuário"
+          );
+        }
+      }
 
       // Valida body
       if (!req.body || typeof req.body !== "object") {

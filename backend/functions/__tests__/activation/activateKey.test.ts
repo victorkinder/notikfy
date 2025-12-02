@@ -1,9 +1,13 @@
 import { Request, Response } from "express";
 import { activateKey } from "../../src/activation/activateKey";
 import { validateAndActivateKey } from "../../src/services/activation.service";
+import { findSignatureByEmail, linkAccessTokenToUserId } from "../../src/services/signature.service";
+import { getOrCreateUser } from "../../src/services/user.service";
 import { auth } from "../../src/config/firebase.config";
 
 jest.mock("../../src/services/activation.service");
+jest.mock("../../src/services/signature.service");
+jest.mock("../../src/services/user.service");
 jest.mock("../../src/config/firebase.config", () => ({
   auth: {
     verifyIdToken: jest.fn(),
@@ -39,16 +43,27 @@ describe("activateKey", () => {
 
   it("deve ativar chave com sucesso", async () => {
     const mockUserId = "user123";
+    const mockEmail = "test@example.com";
     const mockActivationData = {
       planId: "STARTER" as const,
       planName: "Iniciante",
       maxAccounts: 5,
     };
+    const mockSignature = {
+      email: mockEmail,
+      access_token: "ACCESS123",
+      userId: undefined,
+    };
 
     (auth.verifyIdToken as jest.Mock).mockResolvedValue({
       uid: mockUserId,
+      email: mockEmail,
+      name: "Test User",
     });
     (validateAndActivateKey as jest.Mock).mockResolvedValue(mockActivationData);
+    (getOrCreateUser as jest.Mock).mockResolvedValue({});
+    (findSignatureByEmail as jest.Mock).mockResolvedValue(mockSignature);
+    (linkAccessTokenToUserId as jest.Mock).mockResolvedValue(undefined);
 
     await activateKey(
       mockRequest as Request,
@@ -57,6 +72,8 @@ describe("activateKey", () => {
 
     expect(auth.verifyIdToken).toHaveBeenCalledWith("test-token");
     expect(validateAndActivateKey).toHaveBeenCalledWith("TEST123", mockUserId);
+    expect(findSignatureByEmail).toHaveBeenCalledWith(mockEmail);
+    expect(linkAccessTokenToUserId).toHaveBeenCalledWith("ACCESS123", mockUserId);
     expect(mockStatus).toHaveBeenCalledWith(200);
     expect(mockJson).toHaveBeenCalledWith({
       success: true,

@@ -25,6 +25,7 @@ export interface Signature {
   status: SignatureStatus;
   plan: SignaturePlan;
   access_token: string; // Token curto gerado pelo backend
+  userId?: string; // Firebase Auth UID do usuário que ativou a chave
   kiwify_order_id?: string; // ID do pedido na Kiwify
   kiwify_customer_id?: string; // ID do cliente na Kiwify
 }

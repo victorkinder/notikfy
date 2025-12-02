@@ -6,6 +6,7 @@ import { auth } from "../config/firebase.config";
 import {
   findSignatureByToken,
   isSignatureValid,
+  linkAccessTokenToUserId,
 } from "../services/signature.service";
 import { Signature } from "../models/signature.model";
 import { UnauthorizedError, ValidationError } from "../utils/errors";
@@ -110,8 +111,6 @@ export const validateAccessToken = functions.https.onRequest(
       }
 
       // Verifica se a assinatura está válida (ativa e não expirada)
-      // Nota: Não validamos correspondência de email, pois o email do Google
-      // pode ser diferente do email da assinatura (comum na prática)
       const isValid = await isSignatureValid(signature.email);
 
       if (!isValid) {
@@ -129,8 +128,52 @@ export const validateAccessToken = functions.https.onRequest(
         return;
       }
 
+      // Se a assinatura não tiver userId vinculado, vincula automaticamente (migração)
+      if (!signature.userId) {
+        try {
+          await linkAccessTokenToUserId(accessToken.trim(), googleUser.uid);
+          logger.info("Access token vinculado ao userId automaticamente", {
+            userId: googleUser.uid,
+            email: signature.email,
+            accessToken: accessToken.trim(),
+          });
+          // Busca a assinatura atualizada
+          const updatedSignature = await findSignatureByToken(
+            accessToken.trim()
+          );
+          if (updatedSignature) {
+            signature.userId = updatedSignature.userId;
+          }
+        } catch (linkError) {
+          logger.error("Erro ao vincular access token ao userId", {
+            error: linkError,
+            userId: googleUser.uid,
+            email: signature.email,
+          });
+          // Continua mesmo se falhar o link (não quebra a validação)
+        }
+      } else {
+        // Se já tiver userId vinculado, verifica se corresponde ao usuário atual
+        if (signature.userId !== googleUser.uid) {
+          logger.warn("Access token pertence a outro usuário", {
+            tokenUserId: signature.userId,
+            currentUserId: googleUser.uid,
+            email: signature.email,
+          });
+          res.status(200).json({
+            success: true,
+            data: {
+              valid: false,
+              message: "Este access token pertence a outro usuário",
+            } as ValidateAccessTokenResponse,
+          });
+          return;
+        }
+      }
+
       logger.info("Access token validado com sucesso", {
         email: signature.email,
+        userId: googleUser.uid,
         planId: signature.plan.id,
       });
 

@@ -212,3 +212,56 @@ export async function isSignatureValid(email: string): Promise<boolean> {
 
   return true;
 }
+
+/**
+ * Busca userId pelo access_token
+ */
+export async function findUserIdByAccessToken(
+  accessToken: string
+): Promise<string | null> {
+  const signature = await findSignatureByToken(accessToken);
+  return signature?.userId || null;
+}
+
+/**
+ * Vincula access_token ao userId
+ */
+export async function linkAccessTokenToUserId(
+  accessToken: string,
+  userId: string
+): Promise<void> {
+  if (!accessToken || !accessToken.trim()) {
+    throw new ValidationError("Access token é obrigatório");
+  }
+
+  if (!userId || !userId.trim()) {
+    throw new ValidationError("User ID é obrigatório");
+  }
+
+  const signature = await findSignatureByToken(accessToken);
+
+  if (!signature) {
+    throw new NotFoundError("Assinatura não encontrada para este access token");
+  }
+
+  // Se já tiver userId vinculado e for diferente, não permite alteração
+  if (signature.userId && signature.userId !== userId) {
+    throw new ValidationError(
+      "Este access token já está vinculado a outro usuário"
+    );
+  }
+
+  // Atualiza apenas se não tiver userId ou se for o mesmo
+  if (!signature.userId) {
+    await db.collection(COLLECTIONS.SIGNATURES).doc(signature.email).update({
+      userId: userId,
+      update_date: Timestamp.now(),
+    });
+
+    logger.info("Access token vinculado ao userId", {
+      accessToken,
+      userId,
+      email: signature.email,
+    });
+  }
+}

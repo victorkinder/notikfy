@@ -13,6 +13,9 @@ const getTheme = (mode: "light" | "dark"): Theme => {
       secondary: {
         main: "#dc004e",
       },
+      background: {
+        default: mode === "light" ? "rgba(0,0,0,.05)" : undefined,
+      },
     },
     typography: {
       fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',

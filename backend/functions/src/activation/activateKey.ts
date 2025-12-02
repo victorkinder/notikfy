@@ -7,6 +7,10 @@ import { ActivationRequest } from "../models/activation.model";
 import { UnauthorizedError, ValidationError } from "../utils/errors";
 import { auth } from "../config/firebase.config";
 import { getOrCreateUser } from "../services/user.service";
+import {
+  findSignatureByEmail,
+  linkAccessTokenToUserId,
+} from "../services/signature.service";
 
 /**
  * Cloud Function HTTP para ativar uma chave de ativação
@@ -60,6 +64,32 @@ export const activateKey = functions.https.onRequest(
 
       // Garante que o usuário existe com configurações padrão de notificação
       await getOrCreateUser(userId, email, displayName);
+
+      // Busca a assinatura pelo email e vincula o userId ao access_token se existir
+      if (email) {
+        try {
+          const signature = await findSignatureByEmail(email);
+          if (signature && signature.access_token && !signature.userId) {
+            await linkAccessTokenToUserId(signature.access_token, userId);
+            logger.info("Access token vinculado ao userId durante ativação", {
+              userId,
+              email,
+              accessToken: signature.access_token,
+            });
+          }
+        } catch (error) {
+          // Log do erro mas não falha a ativação se não encontrar assinatura
+          // (assinatura pode ser criada depois via webhook)
+          logger.warn(
+            "Não foi possível vincular access_token durante ativação",
+            {
+              userId,
+              email,
+              error,
+            }
+          );
+        }
+      }
 
       logger.info("Chave ativada com sucesso", {
         userId,

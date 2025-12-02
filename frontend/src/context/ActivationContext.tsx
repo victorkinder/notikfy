@@ -121,7 +121,15 @@ export const ActivationContextProvider = ({
       const validation = await validateAccessTokenService(accessToken);
 
       if (!validation.valid || !validation.signature) {
-        throw new Error(validation.message || "Access token inválido");
+        const errorMessage = validation.message || "Access token inválido";
+        
+        // Se o token pertence a outro usuário, limpa a ativação
+        if (errorMessage.includes("pertence a outro usuário")) {
+          removeActivationFromStorage();
+          setActivationData(null);
+        }
+        
+        throw new Error(errorMessage);
       }
 
       const signature = validation.signature;
@@ -167,6 +175,18 @@ export const ActivationContextProvider = ({
       const validation = await validateAccessTokenService(stored.accessToken);
 
       if (!validation.valid) {
+        const errorMessage = validation.message || "Token inválido";
+        
+        // Se o token pertence a outro usuário ou é inválido, limpa a ativação
+        if (
+          errorMessage.includes("pertence a outro usuário") ||
+          errorMessage.includes("inválido")
+        ) {
+          removeActivationFromStorage();
+          setActivationData(null);
+          return false;
+        }
+        
         // Token inválido, limpa a ativação
         removeActivationFromStorage();
         setActivationData(null);
@@ -190,8 +210,13 @@ export const ActivationContextProvider = ({
       return true;
     } catch (error) {
       console.error("Erro ao validar token no login:", error);
-      removeActivationFromStorage();
-      setActivationData(null);
+      // Se o erro contém mensagem sobre token de outro usuário, limpa a ativação
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
+      if (errorMessage.includes("pertence a outro usuário")) {
+        removeActivationFromStorage();
+        setActivationData(null);
+      }
       return false;
     }
   }, []);

@@ -12,6 +12,7 @@ import { logger } from "../utils/logger";
 import {
   findSignatureByEmail,
   findSignatureByToken,
+  findUserIdByAccessToken,
 } from "./signature.service";
 import {
   User as UserModel,
@@ -189,6 +190,16 @@ export async function getUserTikTokProfiles(
     throw new ValidationError("ID do usuário é obrigatório");
   }
 
+  // Se activationAccessToken for fornecido, valida que pertence ao userId correto
+  if (activationAccessToken) {
+    const tokenUserId = await findUserIdByAccessToken(activationAccessToken);
+    if (tokenUserId && tokenUserId !== userId) {
+      throw new ValidationError(
+        "Este token de ativação pertence a outro usuário"
+      );
+    }
+  }
+
   const userRef = db.collection(COLLECTIONS.USUARIOS).doc(userId);
   const userDoc = await userRef.get();
 
@@ -247,6 +258,16 @@ export async function addTikTokProfile(
 ): Promise<TikTokProfileResponse> {
   if (!userId || !userId.trim()) {
     throw new ValidationError("ID do usuário é obrigatório");
+  }
+
+  // Se activationAccessToken for fornecido, valida que pertence ao userId correto
+  if (activationAccessToken) {
+    const tokenUserId = await findUserIdByAccessToken(activationAccessToken);
+    if (tokenUserId && tokenUserId !== userId) {
+      throw new ValidationError(
+        "Este token de ativação pertence a outro usuário"
+      );
+    }
   }
 
   // Valida formato do username
